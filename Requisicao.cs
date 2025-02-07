@@ -1,6 +1,8 @@
 using MySql.Data.MySqlClient;
 using System;
+using System.Data;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Tela_Requisição
 {
@@ -20,284 +22,136 @@ namespace Tela_Requisição
             lvIngredientes2.FullRowSelect = true;
 
             lvIngredientes2.View = View.Details;
-            lvIngredientes2.Columns.Add("ID", 30, HorizontalAlignment.Left);
             lvIngredientes2.Columns.Add("Ingrediente", 150);
             lvIngredientes2.Columns.Add("Quantidade", 150);
         }
 
+        //este botão adiciona os ingredientes no listview através da seleção do produto
+        //multiplicando a receita do produto pela quantidade inserida
         private void button1_Click(object sender, EventArgs e)
         {
             try
             {
-                string data_source = "datasource=localhost;username=root;password='';database=db_lanchonete";
+                //conexão padrão com o banco
+                string data_source = "server=localhost;user=root;password='';database=db_lanchonete";
                 conexao = new MySqlConnection(data_source);
 
-                for (int i = 0; i < cbSelecione.Items.Count; i++)
+                //verificações
+                if (cbSelecione.SelectedItem == null || string.IsNullOrWhiteSpace(txtQuantidade1.Text))
                 {
-                    
-                    if (i < cbSelecione2.Items.Count)
-                    {
-                        string ingredienteSelecionado = cbSelecione.Items[i].ToString();
-                        string ingredienteAdicional = cbSelecione2.Items[i].ToString();
-
-                        string sql = "INSERT INTO produto (ingredientes, quantidade) " +
-                                     "VALUES(@ingredientes, @quantidade)";
-
-                        MySqlCommand comando = new MySqlCommand(sql, conexao);
-                        comando.Parameters.AddWithValue("@ingredientes", ingredienteAdicional);
-                        comando.Parameters.AddWithValue("@quantidade", txtQuantidade1.Text);
-
-                        conexao.Open();
-                        comando.ExecuteNonQuery();
-                        conexao.Close();
-                    }
-                }
-
-                MessageBox.Show("Produtos adicionados com sucesso!");
-                AtualizarListView();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                conexao.Close();
-            }
-        }
-
-        private void AtualizarListView()
-        {
-            try
-            {
-                string data_source = "datasource=localhost;username=root;password='';database=db_lanchonete";
-                conexao = new MySqlConnection(data_source);
-
-                string sql1 = "SELECT id, ingredientes, quantidade FROM produto";
-                string sql2 = "SELECT id, ingrediente, quantidade FROM ingredientes_separados";
-
-                MySqlCommand comando1 = new MySqlCommand(sql1, conexao);
-                MySqlCommand comando2 = new MySqlCommand(sql2, conexao);
-
-                conexao.Open();
-
-                lvIngredientes2.Items.Clear();
-
-                MySqlDataReader reader1 = comando1.ExecuteReader();
-                while (reader1.Read())
-                {
-                    ListViewItem item = new ListViewItem(reader1["id"].ToString());
-                    item.SubItems.Add(reader1["ingredientes"].ToString());
-                    item.SubItems.Add(reader1["quantidade"].ToString());
-                    lvIngredientes2.Items.Add(item);
-                }
-                reader1.Close();
-
-                MySqlDataReader reader2 = comando2.ExecuteReader();
-                while (reader2.Read())
-                {
-                    ListViewItem item = new ListViewItem(reader2["id"].ToString());
-                    item.SubItems.Add(reader2["ingrediente"].ToString());
-                    item.SubItems.Add(reader2["quantidade"].ToString());
-                    lvIngredientes2.Items.Add(item);
-                }
-                reader2.Close();
-
-                if (lvIngredientes2.Items.Count == 0)
-                {
-                    MessageBox.Show("Nenhum produto encontrado.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                conexao.Close();
-            }
-        }
-
-
-        private void btnExcluir_Click(object sender, EventArgs e)
-        {
-            if (lvIngredientes2.SelectedItems.Count == 0)
-            {
-                MessageBox.Show("Selecione um produto para excluir.");
-                return;
-            }
-
-            try
-            {
-                string data_source = "datasource=localhost;username=root;password='';database=db_lanchonete";
-                conexao = new MySqlConnection(data_source);
-
-                string idproduto = lvIngredientes2.SelectedItems[0].SubItems[0].Text;
-
-                string sql = "DELETE FROM produto WHERE id = @id";
-
-                MySqlCommand comando = new MySqlCommand(sql, conexao);
-                comando.Parameters.AddWithValue("@id", idproduto);
-
-                conexao.Open();
-                int rowsAffected = comando.ExecuteNonQuery();
-
-                if (rowsAffected > 0)
-                {
-                    MessageBox.Show("Produto excluído com sucesso.");
-                    lvIngredientes2.SelectedItems[0].Remove();
-                }
-                else
-                {
-                    MessageBox.Show("Erro ao excluir o produto.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                conexao.Close();
-            }
-            AtualizarListView();
-        }
-
-
-        private void btnAdicionar2_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                string data_source = "datasource=localhost;username=root;password='';database=db_lanchonete";
-                conexao = new MySqlConnection(data_source);
-
-                string sql = "INSERT INTO ingredientes_separados (ingrediente, quantidade) " +
-                             "VALUES(@ingrediente, @quantidade)";
-
-                MySqlCommand comando = new MySqlCommand(sql, conexao);
-                comando.Parameters.AddWithValue("@ingrediente", cbSelecione2.Text);
-                comando.Parameters.AddWithValue("@quantidade", txtQuantidade2.Text);
-
-                conexao.Open();
-                comando.ExecuteNonQuery();
-
-                MessageBox.Show("Produto adicionado com sucesso!");
-
-                
-                
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                conexao.Close();
-            }
-                AtualizarListView();
-        }
-
-
-        private void btnBuscar2_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                string data_source = "datasource=localhost;username=root;password='';database=db_lanchonete";
-                conexao = new MySqlConnection(data_source);
-
-                string sql1 = "SELECT id, ingredientes, quantidade FROM produto WHERE ingredientes LIKE @ingrediente";
-                string sql2 = "SELECT id, ingrediente, quantidade FROM ingredientes_separados WHERE ingrediente LIKE @ingrediente";
-
-                MySqlCommand comando1 = new MySqlCommand(sql1, conexao);
-                comando1.Parameters.AddWithValue("@ingrediente", "%" + txtBuscar.Text + "%");
-
-                MySqlCommand comando2 = new MySqlCommand(sql2, conexao);
-                comando2.Parameters.AddWithValue("@ingrediente", "%" + txtBuscar.Text + "%");
-
-                conexao.Open();
-
-                MySqlDataReader reader1 = comando1.ExecuteReader();
-                lvIngredientes2.Items.Clear();
-
-                while (reader1.Read())
-                {
-                    ListViewItem item = new ListViewItem(reader1["id"].ToString());
-                    item.SubItems.Add(reader1["ingredientes"].ToString());
-                    item.SubItems.Add(reader1["quantidade"].ToString());
-                    lvIngredientes2.Items.Add(item);
-                }
-
-                reader1.Close();
-
-                MySqlDataReader reader2 = comando2.ExecuteReader();
-                while (reader2.Read())
-                {
-                    ListViewItem item = new ListViewItem(reader2["id"].ToString());
-                    item.SubItems.Add(reader2["ingrediente"].ToString());
-                    item.SubItems.Add(reader2["quantidade"].ToString());
-                    lvIngredientes2.Items.Add(item);
-                }
-
-                if (lvIngredientes2.Items.Count == 0)
-                {
-                    MessageBox.Show("Nenhum produto encontrado.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                conexao.Close();
-            }
-        }
-
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            {
-                if (lvIngredientes2.SelectedItems.Count == 0)
-                {
-                    MessageBox.Show("Selecione um produto para excluir.");
+                    MessageBox.Show("Selecione um produto e insira uma quantidade válida.");
                     return;
                 }
 
-                try
+                int idProduto = Convert.ToInt32(cbSelecione.SelectedValue);
+                int quantidadeInserida = Convert.ToInt32(txtQuantidade1.Text);
+
+                // query para buscar os ingredientes do produto e seus nomes
+                string sql = @"
+            SELECT i.nome, pi.quantidade
+            FROM Produto_Ingredientes pi
+            JOIN ingrediente i ON pi.id_ingrediente = i.id
+            WHERE pi.id_produto = @id_produto";
+
+                MySqlCommand comando = new MySqlCommand(sql, conexao);
+                comando.Parameters.AddWithValue("@id_produto", idProduto);
+
+                conexao.Open();
+                MySqlDataReader reader = comando.ExecuteReader();
+
+                while (reader.Read())
                 {
-                    string data_source = "datasource=localhost;username=root;password='';database=db_lanchonete";
-                    conexao = new MySqlConnection(data_source);
+                    string nomeIngrediente = reader["nome"].ToString();
+                    int quantidadeOriginal = Convert.ToInt32(reader["quantidade"]);
+                    int quantidadeFinal = quantidadeOriginal * quantidadeInserida; //multiplica pela quantidade inserida
 
-                    string idIngredientes_separados = lvIngredientes2.SelectedItems[0].SubItems[0].Text;
-
-                    string sql = "DELETE FROM ingredientes_separados WHERE id = @id";
-
-                    MySqlCommand comando = new MySqlCommand(sql, conexao);
-                    comando.Parameters.AddWithValue("@id", idIngredientes_separados);
-
-                    conexao.Open();
-                    int rowsAffected = comando.ExecuteNonQuery();
-
-                    if (rowsAffected > 0)
-                    {
-                        MessageBox.Show("Produto excluído com sucesso.");
-                        lvIngredientes2.SelectedItems[0].Remove();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Erro ao excluir o produto.");
-                    }
+                    // adiciona os valores ao ListView
+                    ListViewItem item = new ListViewItem(nomeIngrediente); 
+                    item.SubItems.Add(quantidadeFinal.ToString()); 
+                    lvIngredientes2.Items.Add(item);
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-                finally
-                {
-                    conexao.Close();
-                }
-                AtualizarListView();
+
+                reader.Close();
+                conexao.Close();
+
+                MessageBox.Show("Produtos adicionados com sucesso!");
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro: " + ex.Message);
+            }
+            finally
+            {
+                if (conexao.State == ConnectionState.Open)
+                    conexao.Close();
+            }
+        }
+
+        //este botão adiciona os ingredientes ao listview diretamente
+        private void btnAdicionar2_Click(object sender, EventArgs e)
+        {
+            try
+            {        
+                if (cbSelecione2.SelectedItem == null)
+                {
+                    MessageBox.Show("Selecione um ingrediente antes de continuar.");
+                    return;
+                }
+
+                //obtém o nome do ingrediente
+                string ingredienteSelecionado = cbSelecione2.SelectedItem.ToString();
+
+                //valida o textbox de quantidade
+                int quantidade = 1; 
+                if (!int.TryParse(txtQuantidade2.Text, out quantidade) || quantidade <= 0)
+                {
+                    MessageBox.Show("Insira uma quantidade válida.");
+                    return;
+                }
+
+                //aqui é verificado se ja existe o ingrediente no listview, se sim, soma, se não insere um novo
+                bool encontrado = false;
+                foreach (ListViewItem item in lvIngredientes2.Items)
+                {
+                    //compara através do nome
+                    if (item.SubItems[0].Text.Equals(ingredienteSelecionado, StringComparison.OrdinalIgnoreCase)) 
+                    {
+                        //atualiza a quantidade total, somando a quantidade atual no listview + o que foi inserido no textbox
+                        int quantidadeAtual = int.Parse(item.SubItems[1].Text);
+                        item.SubItems[1].Text = (quantidadeAtual + quantidade).ToString();
+                        encontrado = true;
+                        break;
+                    }
+                }
+
+                //se o ingrediente não foi encontrado, adiciona como novo item
+                if (!encontrado)
+                {
+                    ListViewItem novoItem = new ListViewItem(ingredienteSelecionado);
+                    novoItem.SubItems.Add(quantidade.ToString());
+                    lvIngredientes2.Items.Add(novoItem);
+                }
+
+                MessageBox.Show("Ingrediente adicionado com sucesso!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro: " + ex.Message);
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (lvIngredientes2.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Selecione um ingrediente para excluir.");
+                return;
+            }
+
+            //remove o item selecionado no ListView
+            lvIngredientes2.SelectedItems[0].Remove();
+
+            MessageBox.Show("Ingrediente excluído com sucesso.");
         }
 
         private void CarregarProdutos()
@@ -307,14 +161,17 @@ namespace Tela_Requisição
                 using (MySqlConnection conexao = new MySqlConnection(conexaoString))
                 {
                     conexao.Open();
-                    string query = "SELECT nome FROM produto";
+                    string query = "SELECT id, nome FROM produto"; 
+
                     using (MySqlCommand cmd = new MySqlCommand(query, conexao))
                     {
-                        MySqlDataReader reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            cbSelecione.Items.Add(reader["Nome"].ToString());
-                        }
+                        MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
+                        DataTable dt = new DataTable();
+                        adapter.Fill(dt);
+
+                        cbSelecione.DataSource = dt;
+                        cbSelecione.DisplayMember = "nome"; 
+                        cbSelecione.ValueMember = "id";  
                     }
                 }
             }
@@ -331,21 +188,25 @@ namespace Tela_Requisição
                 using (MySqlConnection conexao = new MySqlConnection(conexaoString))
                 {
                     conexao.Open();
-                    string query = "SELECT Nome FROM Ingrediente";
+                    string query = "SELECT nome FROM ingrediente"; 
+
                     using (MySqlCommand cmd = new MySqlCommand(query, conexao))
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        MySqlDataReader reader = cmd.ExecuteReader();
+                        cbSelecione2.Items.Clear(); 
+
                         while (reader.Read())
-                        {
-                            cbSelecione2.Items.Add(reader["Nome"].ToString());
+                        {                      
+                            cbSelecione2.Items.Add(reader["nome"].ToString());
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erro ao carregar ingredientes: " + ex.Message);
+                MessageBox.Show("Erro ao carregar produtos: " + ex.Message);
             }
         }
+
     }
 }
