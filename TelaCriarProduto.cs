@@ -105,10 +105,11 @@ namespace UC9_AULA_1
             }
 
             //chama a função para salvar no banco e verificando se deu certo
-            if (SalvarProdutoNoBanco(nomeProduto, ingredientes))
+            if (SalvarProdutoNoBanco(nomeProduto, ingredientes, out int idProduto))
             {
                 //adiciona ao ListView de produtos disponíveis
-                ListViewItem novoItem = new ListViewItem(nomeProduto);
+                ListViewItem novoItem = new ListViewItem(idProduto.ToString()); // Adiciona o ID na primeira coluna
+                novoItem.SubItems.Add(nomeProduto); // Adiciona o nome na segunda coluna
                 lvProdutosDisponiveis.Items.Add(novoItem);
 
                 //limpa os campos após salvar
@@ -144,9 +145,6 @@ namespace UC9_AULA_1
                         cmdDeleteProduto.Parameters.AddWithValue("@id", idProduto);
                         cmdDeleteProduto.ExecuteNonQuery();
 
-                        //remove do listview
-                        lvProdutosDisponiveis.Items.Remove(itemSelecionado);
-
                         MessageBox.Show("Produto excluído com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
@@ -154,6 +152,7 @@ namespace UC9_AULA_1
                         MessageBox.Show("Erro ao excluir o produto: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
+                CarregarProdutosDisponiveis();
             }
             else
             {
@@ -192,8 +191,9 @@ namespace UC9_AULA_1
             }
         }
 
-        private bool SalvarProdutoNoBanco(string nomeProduto, List<(int, int)> ingredientes)
+        private bool SalvarProdutoNoBanco(string nomeProduto, List<(int, int)> ingredientes, out int idProduto)
         {
+            idProduto = -1; // Inicializa com um valor inválido
             string connString = "server=localhost;user=root;password='';database=db_lanchonete";
 
             using (MySqlConnection conexao = new MySqlConnection(connString))
@@ -205,10 +205,10 @@ namespace UC9_AULA_1
                     cmd.Parameters.AddWithValue("@nome", nomeProduto);
                     cmd.ExecuteNonQuery();
 
-                    //pegando o ID do produto recém-criado
-                    int idProduto = (int)cmd.LastInsertedId;
+                    // Pegando o ID do produto recém-criado
+                    idProduto = (int)cmd.LastInsertedId;
 
-                    //inserindo os ingredientes na tabela Produto_Ingredientes
+                    // Inserindo os ingredientes na tabela Produto_Ingredientes
                     foreach (var (idIngrediente, quantidade) in ingredientes)
                     {
                         MySqlCommand cmdIngrediente = new MySqlCommand("INSERT INTO Produto_Ingredientes (id_produto, id_ingrediente, quantidade) VALUES (@id_produto, @id_ingrediente, @quantidade)", conexao);
@@ -219,16 +219,16 @@ namespace UC9_AULA_1
                     }
 
                     MessageBox.Show("Produto cadastrado com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return true; //retorna verdadeiro se tudo deu certo
+                    return true; // Retorna verdadeiro se tudo deu certo
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Erro ao salvar o produto: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return false; //retorna falso se deu erro
+                    return false; // Retorna falso se deu erro
                 }
             }
-
         }
+
         private void CarregarProdutosDisponiveis()
         {
             string connString = "server=localhost;user=root;password='';database=db_lanchonete";

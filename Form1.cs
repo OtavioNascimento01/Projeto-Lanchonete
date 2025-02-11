@@ -14,8 +14,8 @@ namespace ProjetoLanchonete
 
         private void btnAdicionarIngredientes_Click(object sender, EventArgs e)
         {
-            //Form2 novaTela = new Form2();
-           // novaTela.Show();
+            AdicionarIngrediente novaTela = new AdicionarIngrediente();
+            novaTela.Show();
 
         }
 
