@@ -33,73 +33,79 @@
             label2 = new Label();
             lvIngredientesDisponiveis = new ListView();
             btnExcluir = new Button();
-            btnAdicionar = new Button();
+            btnSalvarIngrediente = new Button();
             SuspendLayout();
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(3, 9);
+            label1.Location = new Point(3, 12);
             label1.Name = "label1";
-            label1.Size = new Size(124, 15);
+            label1.Size = new Size(156, 20);
             label1.TabIndex = 0;
             label1.Text = "Adicionar Ingrediente:";
             // 
             // txtNomeIngrediente
             // 
-            txtNomeIngrediente.Location = new Point(52, 32);
+            txtNomeIngrediente.Location = new Point(59, 43);
+            txtNomeIngrediente.Margin = new Padding(3, 4, 3, 4);
             txtNomeIngrediente.Name = "txtNomeIngrediente";
-            txtNomeIngrediente.Size = new Size(197, 23);
+            txtNomeIngrediente.Size = new Size(225, 27);
             txtNomeIngrediente.TabIndex = 1;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(3, 35);
+            label2.Location = new Point(3, 47);
             label2.Name = "label2";
-            label2.Size = new Size(43, 15);
+            label2.Size = new Size(53, 20);
             label2.TabIndex = 2;
             label2.Text = "Nome:";
             // 
             // lvIngredientesDisponiveis
             // 
-            lvIngredientesDisponiveis.Location = new Point(3, 97);
+            lvIngredientesDisponiveis.Location = new Point(3, 129);
+            lvIngredientesDisponiveis.Margin = new Padding(3, 4, 3, 4);
             lvIngredientesDisponiveis.Name = "lvIngredientesDisponiveis";
-            lvIngredientesDisponiveis.Size = new Size(294, 341);
+            lvIngredientesDisponiveis.Size = new Size(335, 453);
             lvIngredientesDisponiveis.TabIndex = 3;
             lvIngredientesDisponiveis.UseCompatibleStateImageBehavior = false;
+            lvIngredientesDisponiveis.SelectedIndexChanged += lvIngredientesDisponiveis_SelectedIndexChanged;
             // 
             // btnExcluir
             // 
-            btnExcluir.Location = new Point(52, 61);
+            btnExcluir.Location = new Point(59, 81);
+            btnExcluir.Margin = new Padding(3, 4, 3, 4);
             btnExcluir.Name = "btnExcluir";
-            btnExcluir.Size = new Size(95, 30);
+            btnExcluir.Size = new Size(109, 40);
             btnExcluir.TabIndex = 4;
             btnExcluir.Text = "Excluir";
             btnExcluir.UseVisualStyleBackColor = true;
             btnExcluir.Click += btnExcluir_Click;
             // 
-            // btnAdicionar
+            // btnSalvarIngrediente
             // 
-            btnAdicionar.Location = new Point(153, 61);
-            btnAdicionar.Name = "btnAdicionar";
-            btnAdicionar.Size = new Size(96, 30);
-            btnAdicionar.TabIndex = 5;
-            btnAdicionar.Text = "Adicionar";
-            btnAdicionar.UseVisualStyleBackColor = true;
-            btnAdicionar.Click += button2_Click;
+            btnSalvarIngrediente.Location = new Point(175, 81);
+            btnSalvarIngrediente.Margin = new Padding(3, 4, 3, 4);
+            btnSalvarIngrediente.Name = "btnSalvarIngrediente";
+            btnSalvarIngrediente.Size = new Size(110, 40);
+            btnSalvarIngrediente.TabIndex = 5;
+            btnSalvarIngrediente.Text = "Salvar";
+            btnSalvarIngrediente.UseVisualStyleBackColor = true;
+            btnSalvarIngrediente.Click += button2_Click;
             // 
             // AdicionarIngrediente
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(307, 450);
-            Controls.Add(btnAdicionar);
+            ClientSize = new Size(351, 600);
+            Controls.Add(btnSalvarIngrediente);
             Controls.Add(btnExcluir);
             Controls.Add(lvIngredientesDisponiveis);
             Controls.Add(label2);
             Controls.Add(txtNomeIngrediente);
             Controls.Add(label1);
+            Margin = new Padding(3, 4, 3, 4);
             Name = "AdicionarIngrediente";
             Text = "AdicionarIngrediente";
             ResumeLayout(false);
@@ -113,6 +119,6 @@
         private Label label2;
         private ListView lvIngredientesDisponiveis;
         private Button btnExcluir;
-        private Button btnAdicionar;
+        private Button btnSalvarIngrediente;
     }
 }

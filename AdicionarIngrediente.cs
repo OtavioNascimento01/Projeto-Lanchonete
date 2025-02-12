@@ -27,9 +27,9 @@ namespace UC9_AULA_1
             lvIngredientesDisponiveis.Columns.Add("Nome", 250);
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e) // Botão Salvar
         {
-            string nomeIngrediente = txtNomeIngrediente.Text;
+            string nomeIngrediente = txtNomeIngrediente.Text.Trim();
 
             if (string.IsNullOrWhiteSpace(nomeIngrediente))
             {
@@ -44,18 +44,35 @@ namespace UC9_AULA_1
                 try
                 {
                     conexao.Open();
-                    MySqlCommand cmd = new MySqlCommand("INSERT INTO ingrediente (nome) VALUES (@nome)", conexao);
+                    MySqlCommand cmd;
+
+                    //se for selecionado algo no lv ele altera, se não, adiciona
+                    if (lvIngredientesDisponiveis.SelectedItems.Count > 0)
+                    {                       
+                        ListViewItem itemSelecionado = lvIngredientesDisponiveis.SelectedItems[0];
+                        int idIngrediente = Convert.ToInt32(itemSelecionado.SubItems[0].Text);
+
+                        cmd = new MySqlCommand("UPDATE ingrediente SET nome = @nome WHERE id = @id", conexao);
+                        cmd.Parameters.AddWithValue("@id", idIngrediente);
+                        MessageBox.Show("Ingrediente atualizado com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        // Inserir novo ingrediente
+                        cmd = new MySqlCommand("INSERT INTO ingrediente (nome) VALUES (@nome)", conexao);
+                        MessageBox.Show("Ingrediente adicionado com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+
                     cmd.Parameters.AddWithValue("@nome", nomeIngrediente);
                     cmd.ExecuteNonQuery();
-
-                    MessageBox.Show("Ingrediente cadastrado com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    CarregarIngredientesDoBanco(); 
+                    txtNomeIngrediente.Clear(); 
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     MessageBox.Show("Erro ao salvar o ingrediente: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            CarregarIngredientesDoBanco();
         }
 
         private void btnExcluir_Click(object sender, EventArgs e)
@@ -123,6 +140,15 @@ namespace UC9_AULA_1
                 {
                     MessageBox.Show("Erro ao carregar ingredientes: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+        }
+
+        private void lvIngredientesDisponiveis_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lvIngredientesDisponiveis.SelectedItems.Count > 0)
+            {
+                ListViewItem itemSelecionado = lvIngredientesDisponiveis.SelectedItems[0];
+                txtNomeIngrediente.Text = itemSelecionado.SubItems[1].Text; // Exibe o nome no TextBox
             }
         }
     }

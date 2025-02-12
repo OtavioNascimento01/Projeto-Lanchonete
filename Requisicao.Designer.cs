@@ -79,6 +79,7 @@
             // 
             // groupBox1
             // 
+            groupBox1.BackColor = SystemColors.ActiveCaption;
             groupBox1.Controls.Add(cbLanchonete);
             groupBox1.Controls.Add(label6);
             groupBox1.Controls.Add(button1);
