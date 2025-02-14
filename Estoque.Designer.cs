@@ -62,7 +62,6 @@
             btnBuscar.TabIndex = 1;
             btnBuscar.Text = "Buscar";
             btnBuscar.UseVisualStyleBackColor = false;
-            btnBuscar.Click += btnBuscar_Click;
             // 
             // btnPrestesAVencer
             // 
@@ -74,7 +73,6 @@
             btnPrestesAVencer.TabIndex = 2;
             btnPrestesAVencer.Text = "Estagnado";
             btnPrestesAVencer.UseVisualStyleBackColor = false;
-            btnPrestesAVencer.Click += btnPrestesAVencer_Click;
             // 
             // btnVencido
             // 
@@ -86,7 +84,6 @@
             btnVencido.TabIndex = 3;
             btnVencido.Text = "prester a vencer";
             btnVencido.UseVisualStyleBackColor = false;
-            btnVencido.Click += btnVencido_Click;
             // 
             // label1
             // 
@@ -144,7 +141,6 @@
             btnMostrarEstoqueCompleto.TabIndex = 7;
             btnMostrarEstoqueCompleto.Text = "estoque completo";
             btnMostrarEstoqueCompleto.UseVisualStyleBackColor = true;
-            btnMostrarEstoqueCompleto.Click += btnMostrarEstoqueCompleto_Click;
             // 
             // btnRelatorio
             // 
@@ -155,7 +151,6 @@
             btnRelatorio.TabIndex = 9;
             btnRelatorio.Text = "Relatório";
             btnRelatorio.UseVisualStyleBackColor = true;
-            btnRelatorio.Click += btnRelatorio_Click;
             // 
             // Form1
             // 
