@@ -16,8 +16,7 @@ namespace Tela_Requisição
             InitializeComponent();
             CarregarIngredientes();
             CarregarProdutos();
-
-            cbLanchonete.Items.Add("Lanchonete exemplo");
+            CarregarLanchonetes();
 
             lvIngredientes2.GridLines = true;
             lvIngredientes2.AllowColumnReorder = true;
@@ -50,10 +49,10 @@ namespace Tela_Requisição
 
                 // query para buscar os ingredientes do produto e seus nomes
                 string sql = @"
-            SELECT i.nome, pi.quantidade
-            FROM Produto_Ingredientes pi
-            JOIN ingrediente i ON pi.id_ingrediente = i.id
-            WHERE pi.id_produto = @id_produto";
+                    SELECT i.id, i.nome, pi.quantidade
+                    FROM Produto_Ingredientes pi
+                    JOIN ingrediente i ON pi.id_ingrediente = i.id
+                    WHERE pi.id_produto = @id_produto";
 
                 MySqlCommand comando = new MySqlCommand(sql, conexao);
                 comando.Parameters.AddWithValue("@id_produto", idProduto);
@@ -63,13 +62,15 @@ namespace Tela_Requisição
 
                 while (reader.Read())
                 {
+                    int idIngrediente = Convert.ToInt32(reader["id"]); // Obtendo o ID do ingrediente
                     string nomeIngrediente = reader["nome"].ToString();
                     int quantidadeOriginal = Convert.ToInt32(reader["quantidade"]);
-                    int quantidadeFinal = quantidadeOriginal * quantidadeInserida; //multiplica pela quantidade inserida
+                    int quantidadeFinal = quantidadeOriginal * quantidadeInserida;
 
-                    // adiciona os valores ao ListView
                     ListViewItem item = new ListViewItem(nomeIngrediente);
                     item.SubItems.Add(quantidadeFinal.ToString());
+                    item.Tag = idIngrediente; // 
+
                     lvIngredientes2.Items.Add(item);
                 }
 
@@ -210,6 +211,36 @@ namespace Tela_Requisição
             }
         }
 
+        private void CarregarLanchonetes()
+        {
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection("server=localhost;user=root;password='';database=db_lanchonete"))
+                {
+                    conn.Open();
+                    string query = "SELECT id_lanchonete, nome FROM lanchonetes"; // Ajuste conforme o nome correto da tabela no seu banco
+
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        using (MySqlDataAdapter da = new MySqlDataAdapter(cmd))
+                        {
+                            DataTable dt = new DataTable();
+                            da.Fill(dt);
+
+                            cbLanchonete.DataSource = dt; // Define os dados no ComboBox
+                            cbLanchonete.DisplayMember = "nome"; // Mostra os nomes no dropdown
+                            cbLanchonete.ValueMember = "id_lanchonete"; // Mantém o ID associado
+                            cbLanchonete.SelectedIndex = -1; // Deixa sem seleção inicial
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao carregar lanchonetes: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void btnFazerRequisicao_Click(object sender, EventArgs e)
         {
             // Tratamento de erros
@@ -219,18 +250,21 @@ namespace Tela_Requisição
                 return;
             }
 
-            if (cbLanchonete.SelectedItem == null)
+            if (cbLanchonete.SelectedItem == null || cbLanchonete.SelectedValue == null)
             {
                 MessageBox.Show("Selecione uma lanchonete!", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // Captura a lanchonete selecionada
-            string lanchonete = cbLanchonete.SelectedItem.ToString();
-            int idLanchonete = Convert.ToInt32(cbLanchonete.SelectedValue); // Obtendo o ID da lanchonete
+            // Obtém o ID e nome da lanchonete selecionada
+            int idLanchonete = Convert.ToInt32(cbLanchonete.SelectedValue);
+            string lanchonete = cbLanchonete.Text; // Obtém o nome exibido
+
+            string dataHoraRequisicao = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
 
             // Monta a mensagem de confirmação
             string mensagem = $"Confirma a requisição para a lanchonete: {lanchonete}?\n\n";
+            mensagem += $"Data/Hora da Requisição: {dataHoraRequisicao}\n\n";
             mensagem += "Ingredientes:\n";
 
             foreach (ListViewItem item in lvIngredientes2.Items)
@@ -240,6 +274,7 @@ namespace Tela_Requisição
                 mensagem += $"{ingrediente}: {quantidade}\n";
             }
 
+            // Exibe a mensagem
             DialogResult resposta = MessageBox.Show(mensagem, "Confirmação de Pedido", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 
             // Se resposta for OK, salva no banco
@@ -248,21 +283,25 @@ namespace Tela_Requisição
                 using (MySqlConnection conn = new MySqlConnection("server=localhost;user=root;password='';database=db_lanchonete"))
                 {
                     conn.Open();
-                    string query = @"INSERT INTO estoque (id_lanchonete, id_ingrediente, quantidade)
-                                VALUES (@idLanchonete, @idIngrediente, @quantidade)
-                                ON DUPLICATE KEY UPDATE quantidade = quantidade + VALUES(quantidade);";
+                    string query = @"
+                        INSERT INTO estoque (id_lanchonete, id_ingrediente, quantidade, data_requisicao)
+                        VALUES (@idLanchonete, @idIngrediente, @quantidade, NOW())
+                        ON DUPLICATE KEY UPDATE quantidade = quantidade + VALUES(quantidade);";
 
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
                         foreach (ListViewItem item in lvIngredientes2.Items)
                         {
                             int idIngrediente = Convert.ToInt32(item.Tag); // Pegando o ID do ingrediente
+                            //MessageBox.Show("Tag do Item: " + item.Tag?.ToString());
                             int quantidade = Convert.ToInt32(item.SubItems[1].Text);
 
                             cmd.Parameters.Clear(); // Limpa os parâmetros para cada iteração
                             cmd.Parameters.AddWithValue("@idLanchonete", idLanchonete);
                             cmd.Parameters.AddWithValue("@idIngrediente", idIngrediente);
                             cmd.Parameters.AddWithValue("@quantidade", quantidade);
+
+                            //MessageBox.Show("ID Ingrediente: " + idIngrediente);
 
                             cmd.ExecuteNonQuery();
                         }

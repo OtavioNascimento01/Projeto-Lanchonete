@@ -21,14 +21,11 @@ namespace ControleEstoqueHamburgueria_
             lvEstoque.View = View.Details;
 
             // Adicionando colunas ao ListView
-            lvEstoque.Columns.Add("ID", 50, HorizontalAlignment.Left);
             lvEstoque.Columns.Add("Nome", 150);
-            lvEstoque.Columns.Add("Data Entrada", 100);
-            lvEstoque.Columns.Add("Validade (dias)", 120);
-            lvEstoque.Columns.Add("Data de Vencimento", 150);
+            lvEstoque.Columns.Add("Quantidade", 100);
 
             // Inicializando a conexão com o MySQL
-            string data_source = "server=localhost;database=db_laura_trabalhadora;uid=root;pwd=;";
+            string data_source = "server=localhost;user=root;password='';database=db_lanchonete";
             conexao = new MySqlConnection(data_source);
 
 

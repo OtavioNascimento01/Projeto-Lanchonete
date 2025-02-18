@@ -1,13 +1,12 @@
 using ControleEstoqueHamburgueria_;
-using System.Drawing.Drawing2D;
 using Tela_Requisição;
 using UC9_AULA_1;
 
 namespace ProjetoLanchonete
 {
-    public partial class Form1 : Form
+    public partial class Login : Form
     {
-        public Form1()
+        public Login()
         {
             InitializeComponent();
         }
