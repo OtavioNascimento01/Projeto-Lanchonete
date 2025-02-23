@@ -11,10 +11,10 @@ using MySql.Data.MySqlClient;  // Importa a biblioteca do MySQL
 
 namespace GerenciadorFornecedores
 {
-    public partial class Form1 : Form
+    public partial class Fornecedores : Form
     {
         private MySqlConnection conexao;  // Declaração da conexão com o banco
-        public Form1()
+        public Fornecedores()
         {
             InitializeComponent();
 
@@ -32,7 +32,7 @@ namespace GerenciadorFornecedores
             lvFornecedores.Columns.Add("Frequência", 100);
 
             // Configuração da conexão com MySQL
-            string data_source = "server=localhost;database=db_laura_trabalhadora;uid=root;pwd=;";
+            string data_source = "server=localhost;user=root;password='';database=db_lanchonete";
             conexao = new MySqlConnection(data_source);
 
             // Carregar fornecedores ao abrir a tela

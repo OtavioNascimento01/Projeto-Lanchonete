@@ -34,12 +34,13 @@
             lvIngredientesDisponiveis = new ListView();
             btnExcluir = new Button();
             btnSalvarIngrediente = new Button();
+            btnVoltar = new Button();
             SuspendLayout();
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(3, 12);
+            label1.Location = new Point(12, 12);
             label1.Name = "label1";
             label1.Size = new Size(156, 20);
             label1.TabIndex = 0;
@@ -47,7 +48,7 @@
             // 
             // txtNomeIngrediente
             // 
-            txtNomeIngrediente.Location = new Point(59, 43);
+            txtNomeIngrediente.Location = new Point(68, 52);
             txtNomeIngrediente.Margin = new Padding(3, 4, 3, 4);
             txtNomeIngrediente.Name = "txtNomeIngrediente";
             txtNomeIngrediente.Size = new Size(225, 27);
@@ -56,7 +57,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(3, 47);
+            label2.Location = new Point(12, 52);
             label2.Name = "label2";
             label2.Size = new Size(53, 20);
             label2.TabIndex = 2;
@@ -64,17 +65,17 @@
             // 
             // lvIngredientesDisponiveis
             // 
-            lvIngredientesDisponiveis.Location = new Point(3, 129);
+            lvIngredientesDisponiveis.Location = new Point(12, 135);
             lvIngredientesDisponiveis.Margin = new Padding(3, 4, 3, 4);
             lvIngredientesDisponiveis.Name = "lvIngredientesDisponiveis";
-            lvIngredientesDisponiveis.Size = new Size(335, 453);
+            lvIngredientesDisponiveis.Size = new Size(388, 490);
             lvIngredientesDisponiveis.TabIndex = 3;
             lvIngredientesDisponiveis.UseCompatibleStateImageBehavior = false;
             lvIngredientesDisponiveis.SelectedIndexChanged += lvIngredientesDisponiveis_SelectedIndexChanged;
             // 
             // btnExcluir
             // 
-            btnExcluir.Location = new Point(59, 81);
+            btnExcluir.Location = new Point(67, 87);
             btnExcluir.Margin = new Padding(3, 4, 3, 4);
             btnExcluir.Name = "btnExcluir";
             btnExcluir.Size = new Size(109, 40);
@@ -85,7 +86,7 @@
             // 
             // btnSalvarIngrediente
             // 
-            btnSalvarIngrediente.Location = new Point(175, 81);
+            btnSalvarIngrediente.Location = new Point(183, 87);
             btnSalvarIngrediente.Margin = new Padding(3, 4, 3, 4);
             btnSalvarIngrediente.Name = "btnSalvarIngrediente";
             btnSalvarIngrediente.Size = new Size(110, 40);
@@ -94,11 +95,22 @@
             btnSalvarIngrediente.UseVisualStyleBackColor = true;
             btnSalvarIngrediente.Click += button2_Click;
             // 
+            // btnVoltar
+            // 
+            btnVoltar.Location = new Point(321, 12);
+            btnVoltar.Name = "btnVoltar";
+            btnVoltar.Size = new Size(79, 34);
+            btnVoltar.TabIndex = 6;
+            btnVoltar.Text = "<- Voltar";
+            btnVoltar.UseVisualStyleBackColor = true;
+            btnVoltar.Click += btnVoltar_Click;
+            // 
             // AdicionarIngrediente
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(351, 600);
+            ClientSize = new Size(412, 638);
+            Controls.Add(btnVoltar);
             Controls.Add(btnSalvarIngrediente);
             Controls.Add(btnExcluir);
             Controls.Add(lvIngredientesDisponiveis);
@@ -120,5 +132,6 @@
         private ListView lvIngredientesDisponiveis;
         private Button btnExcluir;
         private Button btnSalvarIngrediente;
+        private Button btnVoltar;
     }
 }

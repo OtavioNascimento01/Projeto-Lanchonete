@@ -1,6 +1,6 @@
 ﻿namespace GerenciadorFornecedores
 {
-    partial class Form1
+    partial class Fornecedores
     {
         /// <summary>
         /// Variável de designer necessária.

@@ -45,6 +45,7 @@
             btnExcluirProduto = new Button();
             lvProdutosDisponiveis = new ListView();
             label5 = new Label();
+            btnVoltar = new Button();
             contextMenuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -187,11 +188,22 @@
             label5.TabIndex = 18;
             label5.Text = "Produtos disponíveis:";
             // 
+            // btnVoltar
+            // 
+            btnVoltar.Location = new Point(940, 12);
+            btnVoltar.Name = "btnVoltar";
+            btnVoltar.Size = new Size(79, 34);
+            btnVoltar.TabIndex = 19;
+            btnVoltar.Text = "<- Voltar";
+            btnVoltar.UseVisualStyleBackColor = true;
+            btnVoltar.Click += btnVoltar_Click;
+            // 
             // TelaAdicionarProduto
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1033, 483);
+            Controls.Add(btnVoltar);
             Controls.Add(label5);
             Controls.Add(lvProdutosDisponiveis);
             Controls.Add(btnExcluirProduto);
@@ -231,5 +243,6 @@
         private Button btnExcluirProduto;
         private ListView lvProdutosDisponiveis;
         private Label label5;
+        private Button btnVoltar;
     }
 }

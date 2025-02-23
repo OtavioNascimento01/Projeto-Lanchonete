@@ -1,4 +1,5 @@
 using MySql.Data.MySqlClient;
+using ProjetoLanchonete;
 using System;
 using System.Data;
 using System.Windows.Forms;
@@ -101,10 +102,10 @@ namespace Tela_Requisição
                     return;
                 }
 
-                //obtém o nome do ingrediente
-                string ingredienteSelecionado = cbSelecione2.SelectedItem.ToString();
+                // Obtém o nome do ingrediente
+                string ingredienteSelecionado = cbSelecione2.Text; // Pegando o nome correto
 
-                //valida o textbox de quantidade
+                // Valida o textbox de quantidade
                 int quantidade = 1;
                 if (!int.TryParse(txtQuantidade2.Text, out quantidade) || quantidade <= 0)
                 {
@@ -112,27 +113,50 @@ namespace Tela_Requisição
                     return;
                 }
 
-                //aqui é verificado se ja existe o ingrediente no listview, se sim, soma, se não insere um novo
-                bool encontrado = false;
-                foreach (ListViewItem item in lvIngredientes2.Items)
+                // Conectar ao banco para obter o ID do ingrediente
+                string data_source = "server=localhost;user=root;password='';database=db_lanchonete";
+                using (MySqlConnection conexao = new MySqlConnection(data_source))
                 {
-                    //compara através do nome
-                    if (item.SubItems[0].Text.Equals(ingredienteSelecionado, StringComparison.OrdinalIgnoreCase))
-                    {
-                        //atualiza a quantidade total, somando a quantidade atual no listview + o que foi inserido no textbox
-                        int quantidadeAtual = int.Parse(item.SubItems[1].Text);
-                        item.SubItems[1].Text = (quantidadeAtual + quantidade).ToString();
-                        encontrado = true;
-                        break;
-                    }
-                }
+                    conexao.Open();
 
-                //se o ingrediente não foi encontrado, adiciona como novo item
-                if (!encontrado)
-                {
-                    ListViewItem novoItem = new ListViewItem(ingredienteSelecionado);
-                    novoItem.SubItems.Add(quantidade.ToString());
-                    lvIngredientes2.Items.Add(novoItem);
+                    string query = "SELECT id FROM ingrediente WHERE nome = @nomeIngrediente";
+                    using (MySqlCommand cmd = new MySqlCommand(query, conexao))
+                    {
+                        cmd.Parameters.AddWithValue("@nomeIngrediente", ingredienteSelecionado);
+
+                        object result = cmd.ExecuteScalar();
+                        if (result == null)
+                        {
+                            MessageBox.Show("Ingrediente não encontrado no banco.");
+                            return;
+                        }
+
+                        int idIngrediente = Convert.ToInt32(result);
+
+                        // Verifica se o ingrediente já está na lista
+                        bool encontrado = false;
+                        foreach (ListViewItem item in lvIngredientes2.Items)
+                        {
+                            if (item.SubItems[0].Text.Equals(ingredienteSelecionado, StringComparison.OrdinalIgnoreCase))
+                            {
+                                // Atualiza a quantidade total
+                                int quantidadeAtual = int.Parse(item.SubItems[1].Text);
+                                item.SubItems[1].Text = (quantidadeAtual + quantidade).ToString();
+                                encontrado = true;
+                                break;
+                            }
+                        }
+
+                        // Se o ingrediente não foi encontrado, adiciona como novo item
+                        if (!encontrado)
+                        {
+                            ListViewItem novoItem = new ListViewItem(ingredienteSelecionado);
+                            novoItem.SubItems.Add(quantidade.ToString());
+                            novoItem.Tag = idIngrediente; //salvando o ID do ingrediente
+
+                            lvIngredientes2.Items.Add(novoItem);
+                        }
+                    }
                 }
 
                 MessageBox.Show("Ingrediente adicionado com sucesso!");
@@ -207,7 +231,7 @@ namespace Tela_Requisição
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erro ao carregar produtos: " + ex.Message);
+                MessageBox.Show("Erro ao carregar ingredientes: " + ex.Message);
             }
         }
 
@@ -301,7 +325,7 @@ namespace Tela_Requisição
                             cmd.Parameters.AddWithValue("@idIngrediente", idIngrediente);
                             cmd.Parameters.AddWithValue("@quantidade", quantidade);
 
-                            //MessageBox.Show("ID Ingrediente: " + idIngrediente);
+                            MessageBox.Show($"ID Ingrediente: {idIngrediente}, Quantidade: {quantidade}");
 
                             cmd.ExecuteNonQuery();
                         }
@@ -310,6 +334,13 @@ namespace Tela_Requisição
 
                 MessageBox.Show("Pedido realizado com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        private void btnVoltar_Click(object sender, EventArgs e)
+        {
+            Form1 telaPrincipal = new Form1();
+            telaPrincipal.Show();
+            this.Close();
         }
     }
 }

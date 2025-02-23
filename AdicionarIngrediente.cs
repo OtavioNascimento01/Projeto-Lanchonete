@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using ProjetoLanchonete;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -48,7 +49,7 @@ namespace UC9_AULA_1
 
                     //se for selecionado algo no lv ele altera, se não, adiciona
                     if (lvIngredientesDisponiveis.SelectedItems.Count > 0)
-                    {                       
+                    {
                         ListViewItem itemSelecionado = lvIngredientesDisponiveis.SelectedItems[0];
                         int idIngrediente = Convert.ToInt32(itemSelecionado.SubItems[0].Text);
 
@@ -65,8 +66,8 @@ namespace UC9_AULA_1
 
                     cmd.Parameters.AddWithValue("@nome", nomeIngrediente);
                     cmd.ExecuteNonQuery();
-                    CarregarIngredientesDoBanco(); 
-                    txtNomeIngrediente.Clear(); 
+                    CarregarIngredientesDoBanco();
+                    txtNomeIngrediente.Clear();
                 }
                 catch (Exception ex)
                 {
@@ -150,6 +151,13 @@ namespace UC9_AULA_1
                 ListViewItem itemSelecionado = lvIngredientesDisponiveis.SelectedItems[0];
                 txtNomeIngrediente.Text = itemSelecionado.SubItems[1].Text; // Exibe o nome no TextBox
             }
+        }
+
+        private void btnVoltar_Click(object sender, EventArgs e)
+        {
+            Form1 telaPrincipal = new Form1();
+            telaPrincipal.Show();
+            this.Close();
         }
     }
 }

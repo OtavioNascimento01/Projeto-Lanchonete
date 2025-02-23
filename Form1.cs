@@ -4,9 +4,9 @@ using UC9_AULA_1;
 
 namespace ProjetoLanchonete
 {
-    public partial class Login : Form
+    public partial class Form1 : Form
     {
-        public Login()
+        public Form1()
         {
             InitializeComponent();
         }
@@ -15,6 +15,7 @@ namespace ProjetoLanchonete
         {
             AdicionarIngrediente novaTela = new AdicionarIngrediente();
             novaTela.Show();
+            this.Hide();
 
         }
 
@@ -22,12 +23,14 @@ namespace ProjetoLanchonete
         {
             TelaAdicionarProduto novaTela = new TelaAdicionarProduto();
             novaTela.Show();
+            this.Hide();
         }
 
         private void btnRequisicao_Click(object sender, EventArgs e)
         {
             Requisicao novaTela = new Requisicao();
             novaTela.Show();
+            this.Hide();
 
         }
 
@@ -35,7 +38,7 @@ namespace ProjetoLanchonete
         {
             Estoque novaTela = new Estoque();
             novaTela.Show();
-
+            this.Hide();
         }
 
         private void btnAdicionarIngredientes_MouseEnter(object sender, EventArgs e)

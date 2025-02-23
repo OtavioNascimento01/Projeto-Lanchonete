@@ -1,4 +1,5 @@
 using MySql.Data.MySqlClient;
+using ProjetoLanchonete;
 using System.ComponentModel.Design;
 using System.Diagnostics.Contracts;
 
@@ -24,7 +25,7 @@ namespace UC9_AULA_1
             lvIngredientesP.Columns.Add("ID", 40, HorizontalAlignment.Left);
             lvIngredientesP.Columns.Add("Nome", 300);
 
-            
+
             lvProdutoP.GridLines = true;
             lvProdutoP.AllowColumnReorder = true;
             lvProdutoP.FullRowSelect = true;
@@ -34,7 +35,7 @@ namespace UC9_AULA_1
             lvProdutoP.Columns.Add("Nome", 150);
             lvProdutoP.Columns.Add("Quantidade", 100);
 
-            
+
             lvProdutosDisponiveis.GridLines = true;
             lvProdutosDisponiveis.AllowColumnReorder = true;
             lvProdutosDisponiveis.FullRowSelect = true;
@@ -53,8 +54,8 @@ namespace UC9_AULA_1
                 //se algum item for selecionado e o espaço do nome nao está em branco
                 //captura os dados necessarios do listview e do textbox
                 ListViewItem itemSelecionado = lvIngredientesP.SelectedItems[0];
-                string id = itemSelecionado.SubItems[0].Text;  
-                string nome = itemSelecionado.SubItems[1].Text; 
+                string id = itemSelecionado.SubItems[0].Text;
+                string nome = itemSelecionado.SubItems[1].Text;
                 string quantidade = txtQuantidadeP.Text;
 
                 //adiciona os ingredientes no listview da receita do produto
@@ -79,7 +80,7 @@ namespace UC9_AULA_1
         //cria o produto com a receita e salva no banco de dados
         private void btnCriarProduto_Click(object sender, EventArgs e)
         {
-            string nomeProduto = txtNome.Text; 
+            string nomeProduto = txtNome.Text;
 
             if (string.IsNullOrWhiteSpace(nomeProduto))
             {
@@ -125,7 +126,7 @@ namespace UC9_AULA_1
             {
                 //obtem o id do produto e exclui no banco
                 ListViewItem itemSelecionado = lvProdutosDisponiveis.SelectedItems[0];
-                int idProduto = Convert.ToInt32(itemSelecionado.SubItems[0].Text); 
+                int idProduto = Convert.ToInt32(itemSelecionado.SubItems[0].Text);
 
                 string connString = "server=localhost;user=root;password='';database=db_lanchonete";
 
@@ -257,6 +258,13 @@ namespace UC9_AULA_1
                     MessageBox.Show("Erro ao carregar produtos: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        private void btnVoltar_Click(object sender, EventArgs e)
+        {
+            Form1 telaPrincipal = new Form1();
+            telaPrincipal.Show();
+            this.Close();
         }
     }
 }
